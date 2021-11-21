@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using GOAP;
 using Pathfinding;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Windows.WebCam;
 
 public class GAgent : MonoBehaviour {
     
@@ -17,6 +20,13 @@ public class GAgent : MonoBehaviour {
 
     public List<GAction> actions = new List<GAction>();
     public Dictionary<Goal, int> goals = new Dictionary<Goal, int>();
+    
+    private bool invoked;
+    private bool atDestination;
+
+    void Awake() {
+        OnCreate();
+    }
 
     void Start() {
         Goal goal = new Goal("win", 1, false);
@@ -32,8 +42,134 @@ public class GAgent : MonoBehaviour {
             }
         }
     }
+
+    void LateUpdate() {
+        //  1) Check if we currently have an action that is running
+        if (CheckCurrentAction())
+            return;
+        
+        //  2) If we don't have a plan or a running action, get a new plan and action queue
+        CheckNewPlan();
+        
+        //  3) Check if we have an empty action queue (viz. we've run out of things to do)
+        CheckEmptyActionQueue();
+
+        //  4) We still have actions to do
+        CheckActionQueue();
+    }
+
+    private void OnReachedDestination() {
+        Debug.Log("Registered agent at destination", gameObject);
+        atDestination = true;
+    }
+
+    private bool CheckCurrentAction() {
+        if (currentAction != null && currentAction.isRunning) {
+            //  Check if the agent has reached it's destination
+            if (atDestination) {
+                if (!invoked) {
+                    Invoke(nameof(CompleteAction), currentAction.duration);
+                    invoked = true;
+                }
+            }
+
+            //  If we have an action, don't create a new plan or action
+            return true;
+        }
+
+        return false;
+    }
+
+    private void CheckNewPlan() {
+        if (planner == null || actionQueue == null) {
+            //  We have no plan to work on, so create one
+            planner = new GPlanner();
+
+            //  Sort our goals and subgoals based on their value
+            var sortedGoals = from entry in goals orderby entry.Value descending select entry;
+            foreach (KeyValuePair<Goal, int> subGoals in sortedGoals) {
+                actionQueue = planner.Plan(actions, subGoals.Key.goals, null);
+                if (actionQueue != null) {
+                    currentGoal = subGoals.Key;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void CheckEmptyActionQueue() {
+        if (actionQueue != null && actionQueue.Count == 0) {
+            //  Do we need to remove the current goal?
+            if (currentGoal.remove) {
+                goals.Remove(currentGoal);
+            }
+
+            // Set planner = null so it will trigger a new one in step 2
+            planner = null;
+        }
+    }
     
-    void Update() { }
+    private void CheckActionQueue() {
+        if (actionQueue != null && actionQueue.Count > 0) {
+            //  Remove the top action of the queue and put it in currentAction
+            currentAction = actionQueue.Dequeue();
+
+            //  Check if all conditions to perform the action are met
+            CheckAction();
+        }
+    }
+    
+    private void CheckAction() {
+        if (currentAction.PrePerform()) {
+            //  Check if our action has a target or a target tag assigned to it
+            DetermineActionTarget();
+
+            if (currentAction.destinationGO != null) {
+                //  We do have a target, so start the action
+                StartAction();
+            }
+        }
+        else {
+            // Our action cannot be performed yet, so force a new plan in step 2
+            actionQueue = null;
+        }
+    }
+
+    private void DetermineActionTarget() {
+        //  We don't have a target but rather a target tag assigned
+        if (currentAction.destinationGO == null && currentAction.destinationTag != null) {
+            //  Find a gameObject corresponding to that tag
+            currentAction.destinationGO = GameObject.FindWithTag(currentAction.destinationTag);
+        }
+    }
+    
+    private void StartAction() {
+        Debug.Log("GOAP -> Action started: " + currentAction);
+        
+        currentAction.isRunning = true;
+    }
+
+    private void CompleteAction() {
+        Debug.Log("GOAP -> Action completed: " + currentAction);
+        
+        currentAction.isRunning = false;
+        currentAction.PostPerform();
+        
+        invoked = false;
+    }
+    
+    #region Events
+
+    private void OnCreate() {
+        GetComponent<Agent>().ReachedDestination += OnReachedDestination;
+    }
+    
+    private void OnDestroy() {
+        GetComponent<Agent>().ReachedDestination -= OnReachedDestination;
+    }
+
+    #endregion
+    
 
     public class Goal {
         public Dictionary<string, int> goals;

@@ -116,7 +116,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionContainer: {fileID: 4381742652850465237}
   combatContainer: {fileID: 0}
-  planner: {fileID: 0}
   currentAction: {fileID: 0}
   actions: []
 --- !u!114 &4759749751856680099
@@ -133,7 +132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   drawGizmos: 1
-  detailedGizmos: 1
+  detailedGizmos: 0
   startEndModifier:
     addPoints: 0
     exactStartPoint: 3
@@ -250,12 +249,11 @@ MonoBehaviour:
   destinationGO: {fileID: 0}
   destinationTag: 
   duration: 0
-  preConditions:
-  - key: test
-    value: 1
+  preConditions: []
   afterEffects:
   - key: afterTest
     value: 1
+  isRunning: 0
 --- !u!1 &8499131070342373696
 GameObject:
   m_ObjectHideFlags: 0

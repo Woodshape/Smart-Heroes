@@ -17,15 +17,21 @@ namespace GOAP {
         public string destinationTag;
         // Duration the action should take
         public float duration = 0.0f;
+        
         // An array of WorldStates of preconditions
-        public WorldState[] preConditions;
+        [SerializeField]
+        private WorldState[] preConditions;
         // An array of WorldStates of afterEffects
-        public WorldState[] afterEffects;
+        [SerializeField]
+        private WorldState[] afterEffects;
 
-        private Dictionary<string, int> preconditions = new Dictionary<string, int>();
-        private Dictionary<string, int> aftereffects = new Dictionary<string, int>();
+        public Dictionary<string, int> preconditions = new Dictionary<string, int>();
+        public Dictionary<string, int> aftereffects = new Dictionary<string, int>();
 
         public WorldStates beliefs;
+        
+        //  Are we currently performing an action?
+        public bool isRunning = false;
 
         private void Awake() {
             foreach (WorldState state in preConditions) {
