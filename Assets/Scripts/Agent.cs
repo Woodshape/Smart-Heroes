@@ -1,31 +1,44 @@
 using System;
+using System.Collections;
 using Pathfinding;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Agent : MonoBehaviour {
-    public Transform target;
+    public GameObject target;
     
     private Vector3 lastTargetPosition = Vector3.zero;
-    
+
+    private GAgent _agent;
     private IAstarAI _ai;
 
-    public event Action ReachedDestination;
+    public event Action ReachedDestinationEvent;
 
-    void Start()
-    {
+    private void Awake() {
+        _agent = GetComponent<GAgent>();
         _ai = GetComponent<IAstarAI>();
         
-        GameObject tar = Instantiate(new GameObject("Target_" + gameObject.name), transform.position, Quaternion.identity);
-        target = tar.transform;
-        target.position = new Vector3(lastTargetPosition.x + Random.Range(-10, 10), lastTargetPosition.y + Random.Range(-10, 10), 0);
+        OnCreate();
     }
-    
-    void Update() {
+
+    void LateUpdate() {
         PathfindingBehaviour();
     }
 
     private bool destinationInvoked;
+
+    public void SetTarget(GameObject target) {
+        this.target = target;
+        
+        destinationInvoked = false;
+        
+        if (target != null) {
+            _ai.destination = target.transform.position;
+            if (!_ai.pathPending) {
+                _ai.SearchPath();
+            }
+        }
+    }
     
     private void PathfindingBehaviour() {
         if (_ai == null || target == null) {
@@ -36,21 +49,25 @@ public class Agent : MonoBehaviour {
         if (!destinationInvoked && _ai.reachedDestination) {
             Debug.Log("A* -> Agent at destination", gameObject);
             
-            ReachedDestination?.Invoke();
+            ReachedDestinationEvent?.Invoke();
 
             destinationInvoked = true;
         }
-
-        Vector3 targetPosition = target.position;
-        if (Vector3.Distance(lastTargetPosition, targetPosition) > 1f) {
-            _ai.destination = targetPosition;
-            _ai.SearchPath();
-        
-            Debug.Log("A* -> Updating pathfinding");
-        
-            lastTargetPosition = targetPosition;
-        
-            destinationInvoked = false;
+    }
+    
+    private void OnActionChanged() {
+        if (_agent.currentAction != null) {
+            Debug.Log("A* -> Action changed, setting new target");
+            
+            SetTarget(_agent.currentAction.destinationGO);
         }
+    }
+
+    private void OnCreate() {
+        GetComponent<GAgent>().ActionChangedEvent += OnActionChanged;
+    }
+    
+    private void OnDestroy() {
+        GetComponent<GAgent>().ActionChangedEvent -= OnActionChanged;
     }
 }

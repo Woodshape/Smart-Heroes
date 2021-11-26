@@ -10,7 +10,9 @@ namespace GOAP {
         public string actionName;
         // Cost of the action
         // This value could also be used to evaluate the "emotion" of the agent performing this action - i.e. higher cost means the agent would rather do something else
-        public float cost = 1.0f; 
+        public float cost = 1.0f;
+        //  Sprite to be used in the UI
+        public Sprite sprite;
         // Target where the action is going to take place
         public GameObject destinationGO = null;
         // Store the tag

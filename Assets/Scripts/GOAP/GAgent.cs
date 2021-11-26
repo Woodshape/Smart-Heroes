@@ -6,12 +6,15 @@ using GOAP;
 using Pathfinding;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using UnityEngine.Windows.WebCam;
 
 public class GAgent : MonoBehaviour {
     
     public GameObject actionContainer;
     public GameObject combatContainer;
+
+    public ActionIconHandler actionIconManager;
 
     public GPlanner planner;
     public Queue<GAction> actionQueue;
@@ -23,6 +26,8 @@ public class GAgent : MonoBehaviour {
     
     private bool invoked;
     private bool atDestination;
+
+    public event Action ActionChangedEvent;
 
     void Awake() {
         OnCreate();
@@ -59,7 +64,7 @@ public class GAgent : MonoBehaviour {
     }
 
     private void OnReachedDestination() {
-        Debug.Log("Registered agent at destination", gameObject);
+        // Debug.Log("Registered agent at destination", gameObject);
         atDestination = true;
     }
 
@@ -91,6 +96,12 @@ public class GAgent : MonoBehaviour {
                 actionQueue = planner.Plan(actions, subGoals.Key.goals, null);
                 if (actionQueue != null) {
                     currentGoal = subGoals.Key;
+                    
+                    // Debug.Log("GOAP -> Current goal: ", gameObject);
+                    // foreach (KeyValuePair<string, int> goal in currentGoal.goals) {
+                    //     Debug.Log($"GOAP -> {goal}", gameObject);
+                    // }
+                    
                     break;
                 }
             }
@@ -128,6 +139,8 @@ public class GAgent : MonoBehaviour {
                 //  We do have a target, so start the action
                 StartAction();
             }
+            
+            ActionChangedEvent?.Invoke();
         }
         else {
             // Our action cannot be performed yet, so force a new plan in step 2
@@ -137,35 +150,40 @@ public class GAgent : MonoBehaviour {
 
     private void DetermineActionTarget() {
         //  We don't have a target but rather a target tag assigned
-        if (currentAction.destinationGO == null && currentAction.destinationTag != null) {
+        if (currentAction.destinationGO == null && currentAction.destinationTag != "") {
             //  Find a gameObject corresponding to that tag
             currentAction.destinationGO = GameObject.FindWithTag(currentAction.destinationTag);
         }
     }
     
     private void StartAction() {
-        Debug.Log("GOAP -> Action started: " + currentAction);
-        
+        // Debug.Log("GOAP -> Action started: " + currentAction);
+
         currentAction.isRunning = true;
+
+        if (actionIconManager != null && currentAction.sprite != null) {
+            StartCoroutine(actionIconManager.Spawn(currentAction.sprite));
+        }
     }
 
     private void CompleteAction() {
-        Debug.Log("GOAP -> Action completed: " + currentAction);
+        // Debug.Log("GOAP -> Action completed: " + currentAction);
         
         currentAction.isRunning = false;
         currentAction.PostPerform();
         
         invoked = false;
+        atDestination = false;
     }
     
     #region Events
 
     private void OnCreate() {
-        GetComponent<Agent>().ReachedDestination += OnReachedDestination;
+        GetComponent<Agent>().ReachedDestinationEvent += OnReachedDestination;
     }
     
     private void OnDestroy() {
-        GetComponent<Agent>().ReachedDestination -= OnReachedDestination;
+        GetComponent<Agent>().ReachedDestinationEvent -= OnReachedDestination;
     }
 
     #endregion

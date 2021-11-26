@@ -69,10 +69,10 @@ public class GPlanner
         // Make a queue out of the actions represented by the nodes in the plan for the agent to work its way through
         Queue<GAction> result = new Queue<GAction>(plan);
 
-        Debug.Log("GOAP -> Plan found: ");
-        foreach (GAction res in result) {
-            Debug.Log("GOAP -> " + res);
-        }
+        // Debug.Log("GOAP -> Plan found: ");
+        // foreach (GAction res in result) {
+        //     Debug.Log("GOAP -> " + res);
+        // }
         
         return result;
     }
