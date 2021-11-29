@@ -42,13 +42,15 @@ public class Agent : MonoBehaviour {
     
     private void PathfindingBehaviour() {
         if (_ai == null || target == null) {
+            Debug.LogWarning("A* -> Agent or target unknown...");
             return;
         }
 
         //  AStar AI
-        if (!destinationInvoked && _ai.reachedDestination) {
+        // if (!destinationInvoked && _ai.reachedDestination) {
+        if (!destinationInvoked && _ai.reachedEndOfPath && !_ai.pathPending) {
             Debug.Log("A* -> Agent at destination", gameObject);
-            
+
             ReachedDestinationEvent?.Invoke();
 
             destinationInvoked = true;
@@ -57,7 +59,7 @@ public class Agent : MonoBehaviour {
     
     private void OnActionChanged() {
         if (_agent.currentAction != null) {
-            Debug.Log("A* -> Action changed, setting new target");
+            Debug.Log("A* -> Action changed, setting new target", gameObject);
             
             SetTarget(_agent.currentAction.destinationGO);
         }

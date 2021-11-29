@@ -1,16 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using GOAP;
-using Pathfinding;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
-public class WanderAction : GAction {
-    
+public class SearchAction : GAction
+{
     public override bool PrePerform() {
         Vector3 randomRelativePosition = new Vector3(transform.position.x + Random.Range(-10, 11), transform.position.y + Random.Range(-10, 11), 0); 
         if (destinationGO == null) {
-            GameObject temp = new GameObject("Wanderpoint " + gameObject.transform.parent.name);
+            GameObject temp = new GameObject("Search Point " + gameObject.transform.parent.name);
             temp.transform.position = randomRelativePosition;
 
             destinationGO = temp;
@@ -20,11 +18,8 @@ public class WanderAction : GAction {
             destinationGO.transform.position = randomRelativePosition;
         }
 
-        duration = Random.Range(1f, 60f);
-
         return true;
     }
-
     public override bool PostPerform() {
         // Destroy(destinationGO);
         

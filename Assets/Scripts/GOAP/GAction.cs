@@ -27,7 +27,9 @@ namespace GOAP {
         [SerializeField]
         private WorldState[] afterEffects;
 
+        [SerializeReference]
         public Dictionary<string, int> preconditions = new Dictionary<string, int>();
+        [SerializeReference]
         public Dictionary<string, int> aftereffects = new Dictionary<string, int>();
 
         public WorldStates beliefs;
@@ -35,7 +37,7 @@ namespace GOAP {
         //  Are we currently performing an action?
         public bool isRunning = false;
 
-        private void Awake() {
+        public void Awake() {
             foreach (WorldState state in preConditions) {
                 preconditions.Add(state.key, state.value);
             }
@@ -70,7 +72,7 @@ namespace GOAP {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, {nameof(actionName)}: {actionName}, {nameof(cost)}: {cost}, {nameof(duration)}: {duration}, {nameof(preConditions)}: {String.Join(" | ", preconditions)}, {nameof(afterEffects)}: {String.Join(" | ", aftereffects)}";
+            return $"{base.ToString()}, {nameof(actionName)}: {actionName}, {nameof(cost)}: {cost}, {nameof(duration)}: {duration}, {nameof(preconditions)}: {String.Join(" | ", preconditions)}, {nameof(aftereffects)}: {String.Join(" | ", aftereffects)}";
         }
     }
 }

@@ -19,13 +19,15 @@ public class Node {
 
 public class GPlanner
 {
+    public GameObject agent;
+    
     public Queue<GAction> Plan(List<GAction> actions, Dictionary<string, int> goals, WorldStates states) {
         List<GAction> usableActions = new List<GAction>();
         
         // Of all the actions available find the ones that can be achieved.
         foreach (GAction action in actions) {
             if (!action.IsAchievable()) {
-                Debug.Log("Action not achievable: " + action);
+                Debug.Log("Action not achievable: " + action, agent);
                 continue;
             }
             
@@ -34,12 +36,12 @@ public class GPlanner
 
         // Create the first node in the graph
         List<Node> leaves = new List<Node>();
-        Node start = new Node(null, 0, GWorld.Instance.GetWorld().GetStates(), null);
+        Node start = new Node(null, 0.0f, GWorld.Instance.GetWorld().GetStates(), null);
 
         // Pass the first node through to start branching out the graph of plans from
         bool success = BuildGraph(start, leaves, usableActions, goals);
         if (!success) {
-            // Debug.LogWarning("GOAP -> No plan");
+            Debug.LogWarning("GOAP -> No plan", agent);
             return null;
         }
 
@@ -67,12 +69,15 @@ public class GPlanner
         }
 
         // Make a queue out of the actions represented by the nodes in the plan for the agent to work its way through
-        Queue<GAction> result = new Queue<GAction>(plan);
+        Queue<GAction> result = new Queue<GAction>();
+        foreach (GAction action in plan) {
+            result.Enqueue(action);
+        }
 
-        // Debug.Log("GOAP -> Plan found: ");
-        // foreach (GAction res in result) {
-        //     Debug.Log("GOAP -> " + res);
-        // }
+        Debug.Log("GOAP -> --- Plan found ---", agent);
+        foreach (GAction res in result) {
+            Debug.Log("GOAP -> " + res, agent);
+        }
         
         return result;
     }

@@ -1,13 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GOAP;
-using Pathfinding;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.UI;
-using UnityEngine.Windows.WebCam;
 
 public class GAgent : MonoBehaviour {
     
@@ -16,13 +11,14 @@ public class GAgent : MonoBehaviour {
 
     public ActionIconHandler actionIconManager;
 
-    public GPlanner planner;
-    public Queue<GAction> actionQueue;
-    public GAction currentAction;
     public Goal currentGoal;
+    public GAction currentAction;
+    
+    private GPlanner planner;
+    private Queue<GAction> actionQueue;
 
-    public List<GAction> actions = new List<GAction>();
-    public Dictionary<Goal, int> goals = new Dictionary<Goal, int>();
+    private List<GAction> actions = new List<GAction>();
+    private Dictionary<Goal, int> goals = new Dictionary<Goal, int>();
     
     private bool invoked;
     private bool atDestination;
@@ -34,12 +30,17 @@ public class GAgent : MonoBehaviour {
     }
 
     void Start() {
-        Goal goal = new Goal("win", 1, false);
-        goals.Add(goal, 1);
+        GameObject go = this.gameObject;
+        
+        Goal wanderGoal = new Goal("wander", 1, false, go);
+        Goal huntGoal = new Goal("hunt", 1, false, go);
+
+        goals.Add(wanderGoal, 3);
+        goals.Add(huntGoal, 1);
 
         //  Start agent with all it's actions ready
         if (actionContainer != null) {
-            Debug.Log("GOAP -> Actions found: ", gameObject);
+            Debug.Log("GOAP -> --- Actions found ---", gameObject);
             foreach (GAction action in actionContainer.GetComponentsInChildren<GAction>()) {
                 actions.Add(action);
                 
@@ -49,7 +50,7 @@ public class GAgent : MonoBehaviour {
     }
 
     void LateUpdate() {
-        //  1) Check if we currently have an action that is running
+        //  1) Check if we currently have an action that is running and if so, do nothing else
         if (CheckCurrentAction())
             return;
         
@@ -89,6 +90,7 @@ public class GAgent : MonoBehaviour {
         if (planner == null || actionQueue == null) {
             //  We have no plan to work on, so create one
             planner = new GPlanner();
+            planner.agent = this.gameObject;
 
             //  Sort our goals and subgoals based on their value
             var sortedGoals = from entry in goals orderby entry.Value descending select entry;
@@ -97,10 +99,10 @@ public class GAgent : MonoBehaviour {
                 if (actionQueue != null) {
                     currentGoal = subGoals.Key;
                     
-                    // Debug.Log("GOAP -> Current goal: ", gameObject);
-                    // foreach (KeyValuePair<string, int> goal in currentGoal.goals) {
-                    //     Debug.Log($"GOAP -> {goal}", gameObject);
-                    // }
+                    Debug.Log("GOAP -> --- Current goals ---", gameObject);
+                    foreach (KeyValuePair<string, int> goal in currentGoal.goals) {
+                        Debug.Log($"GOAP -> {goal}", gameObject);
+                    }
                     
                     break;
                 }
@@ -127,6 +129,12 @@ public class GAgent : MonoBehaviour {
 
             //  Check if all conditions to perform the action are met
             CheckAction();
+            
+            //  Are we stuck?
+            if (actionQueue != null && currentAction != null && !currentAction.isRunning) {
+                Debug.LogWarning("GOAP -> Agent stuck... Calculating new plan.", gameObject);
+                planner = null;
+            }
         }
     }
     
@@ -157,7 +165,7 @@ public class GAgent : MonoBehaviour {
     }
     
     private void StartAction() {
-        // Debug.Log("GOAP -> Action started: " + currentAction);
+        Debug.Log("GOAP -> Action started: " + currentAction, gameObject);
 
         currentAction.isRunning = true;
 
@@ -167,7 +175,7 @@ public class GAgent : MonoBehaviour {
     }
 
     private void CompleteAction() {
-        // Debug.Log("GOAP -> Action completed: " + currentAction);
+        Debug.Log("GOAP -> Action completed: " + currentAction, gameObject);
         
         currentAction.isRunning = false;
         currentAction.PostPerform();
@@ -189,7 +197,9 @@ public class GAgent : MonoBehaviour {
     #endregion
     
 
+    [Serializable]
     public class Goal {
+        [SerializeReference]
         public Dictionary<string, int> goals;
         public bool remove;
 
@@ -199,6 +209,14 @@ public class GAgent : MonoBehaviour {
             this.remove = remove;
 
             Debug.Log($"GOAP -> Added Goal: {state}:{value}");
+        }
+        
+        public Goal(string state, int value, bool remove, GameObject context) {
+            goals = new Dictionary<string, int>();
+            goals.Add(state, value);
+            this.remove = remove;
+
+            Debug.Log($"GOAP -> Added Goal: {state}:{value}", context);
         }
     }
 }

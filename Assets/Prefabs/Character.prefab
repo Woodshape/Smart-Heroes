@@ -100,6 +100,166 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 247
+--- !u!1 &1834524915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1834524916}
+  - component: {fileID: 1834524918}
+  - component: {fileID: 1834524917}
+  - component: {fileID: 1596293488}
+  m_Layer: 0
+  m_Name: Hunt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1834524916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834524915}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4381742652850465242}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1834524918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834524915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a07a1ce3de0ff714dbc564d342e2e01e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionName: Find Tracks
+  cost: 1
+  sprite: {fileID: 21300000, guid: f9d32d5324b96d24f8026fdb8f6d3f45, type: 3}
+  destinationGO: {fileID: 0}
+  destinationTag: 
+  duration: 5
+  preConditions: []
+  afterEffects:
+  - key: foundTracks
+    value: 1
+  isRunning: 0
+--- !u!114 &1834524917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834524915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c82cf847e7e2b1469e99b06c66f71df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionName: Hunt
+  cost: 1
+  sprite: {fileID: 21300000, guid: 1149e752e2f85af4ea0c963efbc915c5, type: 3}
+  destinationGO: {fileID: 0}
+  destinationTag: 
+  duration: 10
+  preConditions:
+  - key: canHunt
+    value: 1
+  afterEffects:
+  - key: hunt
+    value: 1
+  isRunning: 0
+--- !u!114 &1596293488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834524915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58ba9ea48c070ce47a0aeb848642eadd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionName: 
+  cost: 1
+  sprite: {fileID: 0}
+  destinationGO: {fileID: 0}
+  destinationTag: 
+  duration: 0
+  preConditions:
+  - key: foundTracks
+    value: 1
+  afterEffects:
+  - key: canHunt
+    value: 1
+  isRunning: 0
+--- !u!1 &1936320643
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1936320644}
+  - component: {fileID: 1936320645}
+  m_Layer: 0
+  m_Name: Wander
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1936320644
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936320643}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4381742652850465242}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1936320645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936320643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7497fbe89d6ff94eb8ece155457cdc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionName: Idle
+  cost: 1
+  sprite: {fileID: 21300000, guid: 144c4f612b37d2b49a40687718ad1a7b, type: 3}
+  destinationGO: {fileID: 0}
+  destinationTag: 
+  duration: 1
+  preConditions: []
+  afterEffects:
+  - key: wander
+    value: 1
+  isRunning: 0
 --- !u!1 &4381742652230298936
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,8 +378,9 @@ MonoBehaviour:
   actionContainer: {fileID: 4381742652850465237}
   combatContainer: {fileID: 0}
   actionIconManager: {fileID: 140419440355345510}
+  currentGoal:
+    remove: 0
   currentAction: {fileID: 0}
-  actions: []
 --- !u!114 &4759749751856680099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,14 +398,14 @@ MonoBehaviour:
   detailedGizmos: 0
   startEndModifier:
     addPoints: 0
-    exactStartPoint: 4
-    exactEndPoint: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
     useRaycasting: 0
     mask:
       serializedVersion: 2
       m_Bits: 4294967295
     useGraphRaycasting: 0
-  traversableTags: -3
+  traversableTags: -1
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
@@ -312,7 +473,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4381742652850465242}
-  - component: {fileID: 916660248412252507}
   m_Layer: 0
   m_Name: Actions
   m_TagString: Untagged
@@ -330,33 +490,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1936320644}
+  - {fileID: 1834524916}
   m_Father: {fileID: 4381742652230298940}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &916660248412252507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4381742652850465237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7497fbe89d6ff94eb8ece155457cdc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  actionName: Idle
-  cost: 1
-  sprite: {fileID: 21300000, guid: 144c4f612b37d2b49a40687718ad1a7b, type: 3}
-  destinationGO: {fileID: 0}
-  destinationTag: 
-  duration: 1
-  preConditions: []
-  afterEffects:
-  - key: win
-    value: 1
-  isRunning: 0
 --- !u!1 &8499131070342373696
 GameObject:
   m_ObjectHideFlags: 0
