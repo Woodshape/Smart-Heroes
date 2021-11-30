@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DefaultNamespace;
 using Goals;
 using UnityEngine;
 
@@ -24,6 +25,15 @@ namespace Actions {
             _agent = GetComponentInParent<Agent>();
         }
 
+        private void Update() {
+            if (this is IDecayable) {
+                IDecayable decayable = (IDecayable) this;
+                decayable.Decay();
+            }
+        }
+
+        public abstract bool CanRun();
+
         public abstract int CalculateCost();
 
         public virtual List<Goal> GetSupportedGoals() {
@@ -31,17 +41,16 @@ namespace Actions {
         }
 
         public virtual void OnActionTick() {
-            
         }
         
         public virtual void OnActionActivated(Goal goal) {
-            Debug.Log($"Activating action for goal: {this} [{goal}]");
+            Debug.Log($"GOAP -> Activating action for goal: {this} [{goal}]");
 
             linkedGoal = goal;
         }
         
         public virtual void OnActionDeactivated() {
-            Debug.Log("Deactivating action: " + this);
+            Debug.Log("GOAP -> Deactivating action: " + this);
 
             linkedGoal = null;
         }

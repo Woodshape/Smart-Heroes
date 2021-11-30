@@ -9,6 +9,10 @@ namespace Actions {
 
         private GameObject wanderingPoint;
 
+        public override bool CanRun() {
+            return true;
+        }
+        
         public override int CalculateCost() {
             return 1;
         }
@@ -34,6 +38,7 @@ namespace Actions {
                 temp.transform.position = randomRelativePosition;
 
                 wanderingPoint = temp;
+                wanderingPoint.transform.parent = gameObject.transform;
             }
             else {
                 wanderingPoint.transform.position = randomRelativePosition;
@@ -53,7 +58,7 @@ namespace Actions {
         }
         
         private void AgentOnReachedDestinationEvent() {
-            Debug.Log("Wandering point reached...");
+            Debug.Log("GOAP -> Wandering point reached...");
 
             Destroy(wanderingPoint);
             wanderingPoint = null;

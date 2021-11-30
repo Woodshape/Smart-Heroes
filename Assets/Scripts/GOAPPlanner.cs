@@ -21,14 +21,14 @@ namespace DefaultNamespace {
                 goals = new List<Goal>(GetComponentsInChildren<Goal>());
             }
             else {
-                Debug.LogWarning("No goal container on: " + this);
+                Debug.LogWarning("GOAP -> No goal container on: " + this);
             }
             
             if (actionContainer) {
                 actions = new List<Action>(GetComponentsInChildren<Action>());
             }
             else {
-                Debug.LogWarning("No action container on: " + this);
+                Debug.LogWarning("GOAP -> No action container on: " + this);
             }
         }
 
@@ -53,6 +53,10 @@ namespace DefaultNamespace {
                 
                 //  Find action supporting this goal with the lowest cost
                 foreach (Action action in actions) {
+                    if (!action.CanRun()) {
+                        continue;
+                    }
+                    
                     if (!action.GetSupportedGoals().Contains(goal)) {
                         continue;
                     }
@@ -73,7 +77,7 @@ namespace DefaultNamespace {
 
             //  Did we find a goal?
             if (currentGoal == null) {
-                Debug.Log($"New goal and action: {bestGoal} [{bestAction}]");
+                Debug.Log($"GOAP -> New goal and action: {bestGoal} [{bestAction}]");
                 
                 OnGoalChanged(bestGoal, bestAction);
                 
@@ -97,7 +101,7 @@ namespace DefaultNamespace {
                 }
             } // We found a better goal
             else if (currentGoal != bestGoal) {
-                Debug.Log($"New goal found: {currentGoal} -> {bestGoal}");
+                Debug.Log($"GOAP -> New goal found: {currentGoal} -> {bestGoal}");
                 
                 OnGoalChanged(bestGoal, bestAction);
             }
@@ -107,9 +111,51 @@ namespace DefaultNamespace {
                 currentAction.OnActionTick();
             }
         }
+
+        public void AddGoal(Goal goalToAdd) {
+            
+        }
+        
+        public void AddGoals(List<Goal> goalsToAdd) {
+            
+        }
+
+        public void RemoveGoal(Goal goalToRemove) {
+            
+        }
+        
+        public void RemoveGoals(List<Goal> goalsToRemove) {
+            
+        }
+
+        public void AddAction(Action actionToAdd) {
+            
+        }
+        
+        public void AddActions(List<Action> actionsToAdd) {
+            
+        }
+
+        public void RemoveAction(Action actionToRemove) {
+            if (!actions.Contains(actionToRemove))
+                return;
+
+            //  First, check if the action we want to remove is currently active
+            if (currentAction.Equals(actionToRemove)) {
+                currentAction.OnActionDeactivated();
+            }
+
+            actions.Remove(actionToRemove);
+        }
+        
+        public void RemoveActions(List<Action> actionsToRemove) {
+            foreach (Action action in actionsToRemove) {
+                RemoveAction(action);
+            }
+        }
         
         private void OnActionChanged(Action action) {
-            Debug.Log($"Action changed: {currentAction} -> {action}");
+            Debug.Log($"GOAP -> Action changed: {currentAction} -> {action}");
             
             currentAction.OnActionDeactivated();
 
@@ -119,8 +165,8 @@ namespace DefaultNamespace {
         }
 
         void OnGoalChanged(Goal goal, Action action) {
-            Debug.Log($"Goal changed: {currentGoal} -> {goal}");
-            Debug.Log($"Action changed: {currentAction} -> {action}");
+            Debug.Log($"GOAP -> Goal changed: {currentGoal} -> {goal}");
+            Debug.Log($"GOAP -> Action changed: {currentAction} -> {action}");
             
             //  Deactivate new goal and action
             if (currentGoal != null) {

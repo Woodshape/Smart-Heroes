@@ -6,6 +6,10 @@ using UnityEngine;
 using Action = Actions.Action;
 
 public class IdleAction : Action {
+    public override bool CanRun() {
+        return true;
+    }
+    
     public override int CalculateCost() {
         return 10;
     }

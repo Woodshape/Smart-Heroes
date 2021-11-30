@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 using Action = Actions.Action;
 
@@ -15,6 +16,7 @@ namespace Goals {
     }
 
     public abstract class Goal : MonoBehaviour, IGoal {
+        public List<Action> updateActions = new List<Action>();
 
         protected Agent _agent;
 
@@ -26,6 +28,18 @@ namespace Goals {
 
         private void Update() {
             OnGoalTick();
+
+            if (this is IDecayable) {
+                IDecayable decayable = (IDecayable) this;
+                decayable.Decay();
+            }
+
+            //  Tick other actions that need to be ticked passively
+            // foreach (Action action in updateActions) {
+            //     if (action != linkedAction) {
+            //         action.OnActionTick();
+            //     }
+            // }
         }
 
         public abstract bool CanRun();
@@ -35,13 +49,13 @@ namespace Goals {
         public virtual void OnGoalTick() { }
 
         public virtual void OnGoalActivated(Action action) {
-            Debug.Log($"Activating goal with action: {this} [{action}]");
+            Debug.Log($"GOAP -> Activating goal with action: {this} [{action}]");
 
             linkedAction = action;
         }
 
         public virtual void OnGoalDeactivated() {
-            Debug.Log("Deactivating goal: " + this);
+            Debug.Log("GOAP -> Deactivating goal: " + this);
 
             linkedAction = null;
         }

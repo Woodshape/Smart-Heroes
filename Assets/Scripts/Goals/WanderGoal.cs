@@ -1,12 +1,13 @@
 ﻿using Actions;
+using DefaultNamespace;
 using UnityEngine;
 
 namespace Goals {
-    public class WanderGoal : Goal {
+    public class WanderGoal : Goal, IDecayable {
         [SerializeField]
         private int minPriority = 0;
         [SerializeField]
-        private int maxPriority = 30;
+        private int maxPriority = 20;
 
         [SerializeField]
         private float priorityBuildRate = 1f;
@@ -23,6 +24,15 @@ namespace Goals {
         }
 
         public override void OnGoalTick() {
+        }
+
+        public override void OnGoalActivated(Action action) {
+            base.OnGoalActivated(action);
+            
+            currentPriority = maxPriority;
+        }
+        
+        public void Decay() {
             if (_agent.IsMoving()) {
                 currentPriority -= priorityDecayRate * Time.deltaTime;
             }
@@ -31,12 +41,6 @@ namespace Goals {
             }
 
             currentPriority = Mathf.Clamp(currentPriority, minPriority, maxPriority);
-        }
-
-        public override void OnGoalActivated(Action action) {
-            base.OnGoalActivated(action);
-            
-            currentPriority = maxPriority;
         }
     }
 }

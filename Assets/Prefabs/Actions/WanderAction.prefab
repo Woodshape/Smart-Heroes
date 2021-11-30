@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   supportedGoals:
-  - {fileID: 0}
+  - {fileID: 895276950588170265, guid: 51268d3fe842c4740b3367d61f44dcaa, type: 3}

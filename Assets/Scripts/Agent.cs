@@ -81,6 +81,6 @@ public class Agent : MonoBehaviour {
     }
     
     private void OnDestroy() {
-        GetComponent<GAgent>().ActionChangedEvent -= OnActionChanged;
+        // GetComponent<GAgent>().ActionChangedEvent -= OnActionChanged;
     }
 }
