@@ -9,42 +9,36 @@ namespace Goals {
     public interface IGoal {
         bool CanRun();
         int CalculatePriority();
-    
+
+        void OnActiveTick();
         void OnGoalTick();
         void OnGoalActivated(Action action);
         void OnGoalDeactivated();
     }
 
     public abstract class Goal : MonoBehaviour, IGoal {
-        public List<Action> updateActions = new List<Action>();
-
         protected Agent _agent;
 
         protected Action linkedAction;
 
-        private void Awake() {
+        protected void Awake() {
             _agent = GetComponentInParent<Agent>();
         }
 
-        private void Update() {
+        protected void Update() {
             OnGoalTick();
 
             if (this is IDecayable) {
                 IDecayable decayable = (IDecayable) this;
                 decayable.Decay();
             }
-
-            //  Tick other actions that need to be ticked passively
-            // foreach (Action action in updateActions) {
-            //     if (action != linkedAction) {
-            //         action.OnActionTick();
-            //     }
-            // }
         }
 
         public abstract bool CanRun();
 
         public abstract int CalculatePriority();
+        
+        public virtual void OnActiveTick() { }
 
         public virtual void OnGoalTick() { }
 

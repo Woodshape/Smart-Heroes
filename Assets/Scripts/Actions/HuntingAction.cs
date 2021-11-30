@@ -18,6 +18,7 @@ namespace Actions {
         public override void OnActionActivated(Goal goal) {
             base.OnActionActivated(goal);
 
+            //  FIXME
             currentCost = 5f;
         }
         

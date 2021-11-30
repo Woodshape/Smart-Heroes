@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Actions;
 using Goals;
+using TMPro;
 using UnityEngine;
 
 namespace DefaultNamespace {
@@ -9,6 +10,8 @@ namespace DefaultNamespace {
         public GameObject goalContainer;
         public GameObject actionContainer;
         public GameObject combatContainer;
+
+        public GameObject debugUIContainer;
         
         private List<Goal> goals = new List<Goal>();
         private List<Action> actions = new List<Action>();
@@ -80,19 +83,7 @@ namespace DefaultNamespace {
                 Debug.Log($"GOAP -> New goal and action: {bestGoal} [{bestAction}]");
                 
                 OnGoalChanged(bestGoal, bestAction);
-                
-                // currentGoal = bestGoal;
-                // currentAction = bestAction;
-                //
-                // //  Deactivate new goal and action
-                // if (currentGoal != null) {
-                //     currentGoal.OnGoalActivated();
-                // }
-                //
-                // if (currentAction != null) {
-                //     currentAction.OnActionActivated();
-                // }
-                
+
             } //  No change in goal
             else if (currentGoal == bestGoal) {
                 //  Action changed
@@ -109,6 +100,10 @@ namespace DefaultNamespace {
             //  Nothing changed
             if (currentAction != null) {
                 currentAction.OnActionTick();
+            }
+
+            if (currentGoal != null) {
+                currentGoal.OnActiveTick();
             }
         }
 
@@ -162,9 +157,11 @@ namespace DefaultNamespace {
             currentAction = action;
 
             currentAction.OnActionActivated(currentGoal);
+            
+            DisplayDebugUI();
         }
 
-        void OnGoalChanged(Goal goal, Action action) {
+        private void OnGoalChanged(Goal goal, Action action) {
             Debug.Log($"GOAP -> Goal changed: {currentGoal} -> {goal}");
             Debug.Log($"GOAP -> Action changed: {currentAction} -> {action}");
             
@@ -187,6 +184,14 @@ namespace DefaultNamespace {
 
             if (currentAction != null) {
                 currentAction.OnActionActivated(goal);
+            }
+
+            DisplayDebugUI();
+        }
+
+        private void DisplayDebugUI() {
+            if (debugUIContainer != null) {
+                debugUIContainer.GetComponent<TextMeshProUGUI>().text = $"{currentGoal} -> {currentAction}";
             }
         }
     }

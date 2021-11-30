@@ -21,11 +21,11 @@ namespace Actions {
         protected Goal linkedGoal;
         
 
-        public void Awake() {
+        protected void Awake() {
             _agent = GetComponentInParent<Agent>();
         }
 
-        private void Update() {
+        protected void Update() {
             if (this is IDecayable) {
                 IDecayable decayable = (IDecayable) this;
                 decayable.Decay();
