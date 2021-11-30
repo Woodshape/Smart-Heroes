@@ -26,6 +26,8 @@ public class GAgent : MonoBehaviour {
     public event Action ActionChangedEvent;
 
     void Awake() {
+        planner = new GPlanner {agent = this.gameObject};
+        
         OnCreate();
     }
 
@@ -35,8 +37,8 @@ public class GAgent : MonoBehaviour {
         Goal wanderGoal = new Goal("wander", 1, false, go);
         Goal huntGoal = new Goal("hunt", 1, false, go);
 
-        goals.Add(wanderGoal, 3);
-        goals.Add(huntGoal, 1);
+        goals.Add(wanderGoal, 1);
+        goals.Add(huntGoal, 3);
 
         //  Start agent with all it's actions ready
         if (actionContainer != null) {
@@ -50,6 +52,11 @@ public class GAgent : MonoBehaviour {
     }
 
     void LateUpdate() {
+        if (planner == null) {
+            Debug.LogWarning("GAgent has no planner!");
+            return;
+        }
+        
         //  1) Check if we currently have an action that is running and if so, do nothing else
         if (CheckCurrentAction())
             return;
@@ -87,11 +94,9 @@ public class GAgent : MonoBehaviour {
     }
 
     private void CheckNewPlan() {
-        if (planner == null || actionQueue == null) {
+        if (actionQueue == null) {
             //  We have no plan to work on, so create one
-            planner = new GPlanner();
-            planner.agent = this.gameObject;
-
+            
             //  Sort our goals and subgoals based on their value
             var sortedGoals = from entry in goals orderby entry.Value descending select entry;
             foreach (KeyValuePair<Goal, int> subGoals in sortedGoals) {
@@ -103,7 +108,7 @@ public class GAgent : MonoBehaviour {
                     foreach (KeyValuePair<string, int> goal in currentGoal.goals) {
                         Debug.Log($"GOAP -> {goal}", gameObject);
                     }
-                    
+
                     break;
                 }
             }
@@ -117,8 +122,8 @@ public class GAgent : MonoBehaviour {
                 goals.Remove(currentGoal);
             }
 
-            // Set planner = null so it will trigger a new one in step 2
-            planner = null;
+            // Set queue = null so it will trigger a new one in step 2
+            actionQueue = null;
         }
     }
     
@@ -131,10 +136,10 @@ public class GAgent : MonoBehaviour {
             CheckAction();
             
             //  Are we stuck?
-            if (actionQueue != null && currentAction != null && !currentAction.isRunning) {
-                Debug.LogWarning("GOAP -> Agent stuck... Calculating new plan.", gameObject);
-                planner = null;
-            }
+            // if (actionQueue != null && currentAction != null && !currentAction.isRunning) {
+            //     Debug.LogWarning("GOAP -> Agent stuck... Calculating new plan.", gameObject);
+            //     actionQueue = null;
+            // }
         }
     }
     

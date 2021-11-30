@@ -11,8 +11,6 @@ public class ActionIconHandler : MonoBehaviour
         ActionIcon instance = Instantiate(actionIcon, transform);
         instance.sprite = sprite;
 
-        instance.GetComponent<Image>().sprite = sprite;
-        
         // for (float t = 0f; t < 5f; t += Time.deltaTime) {
         //     Color c = actionIcon;
         //     c.a = c.a - 0.1f;

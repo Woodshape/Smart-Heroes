@@ -78,7 +78,7 @@ public class GPlanner
         foreach (GAction res in result) {
             Debug.Log("GOAP -> " + res, agent);
         }
-        
+
         return result;
     }
     

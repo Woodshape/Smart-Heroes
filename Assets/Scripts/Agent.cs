@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DefaultNamespace;
 using Pathfinding;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -10,12 +11,14 @@ public class Agent : MonoBehaviour {
     private Vector3 lastTargetPosition = Vector3.zero;
 
     private GAgent _agent;
+    private GOAPPlanner _planner;
     private IAstarAI _ai;
 
     public event Action ReachedDestinationEvent;
 
     private void Awake() {
         _agent = GetComponent<GAgent>();
+        _planner = GetComponent<GOAPPlanner>();
         _ai = GetComponent<IAstarAI>();
         
         OnCreate();
@@ -25,35 +28,41 @@ public class Agent : MonoBehaviour {
         PathfindingBehaviour();
     }
 
-    private bool destinationInvoked;
+    public void SetTarget(GameObject newTarget) {
+        string tar = this.target != null ? this.target.transform.position.ToString() : "No target";
+        Debug.Log($"A* -> Setting new target: {tar} -> {newTarget.transform.position}");
+        this.target = newTarget;
 
-    public void SetTarget(GameObject target) {
-        this.target = target;
-        
-        destinationInvoked = false;
-        
         if (target != null) {
+            Debug.Log("A* -> Setting new destination: " + target.transform.position);
             _ai.destination = target.transform.position;
             if (!_ai.pathPending) {
+                Debug.Log("A* -> Searching new path");
                 _ai.SearchPath();
             }
         }
     }
+
+    public bool IsMoving() {
+        if (!_ai.hasPath) {
+            return false;
+        }
+        
+        return !(_ai.reachedEndOfPath && !_ai.pathPending);
+    }
     
     private void PathfindingBehaviour() {
         if (_ai == null || target == null) {
-            Debug.LogWarning("A* -> Agent or target unknown...");
+            // Debug.LogWarning("A* -> Agent or target unknown...");
             return;
         }
 
         //  AStar AI
         // if (!destinationInvoked && _ai.reachedDestination) {
-        if (!destinationInvoked && _ai.reachedEndOfPath && !_ai.pathPending) {
+        if (_ai.reachedEndOfPath && !_ai.pathPending) {
             Debug.Log("A* -> Agent at destination", gameObject);
 
             ReachedDestinationEvent?.Invoke();
-
-            destinationInvoked = true;
         }
     }
     
@@ -62,11 +71,13 @@ public class Agent : MonoBehaviour {
             Debug.Log("A* -> Action changed, setting new target", gameObject);
             
             SetTarget(_agent.currentAction.destinationGO);
+            // SetTarget(_planner.currentAction.target);
         }
     }
 
     private void OnCreate() {
-        GetComponent<GAgent>().ActionChangedEvent += OnActionChanged;
+        // GetComponent<GAgent>().ActionChangedEvent += OnActionChanged;
+        // GetComponent<GOAPPlanner>().ActionChangedEvent += OnActionChanged;
     }
     
     private void OnDestroy() {

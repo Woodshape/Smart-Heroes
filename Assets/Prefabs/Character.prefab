@@ -110,8 +110,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1834524916}
   - component: {fileID: 1834524918}
-  - component: {fileID: 1834524917}
   - component: {fileID: 1596293488}
+  - component: {fileID: 1834524917}
   m_Layer: 0
   m_Name: Hunt
   m_TagString: Untagged
@@ -156,31 +156,6 @@ MonoBehaviour:
   - key: foundTracks
     value: 1
   isRunning: 0
---- !u!114 &1834524917
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1834524915}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c82cf847e7e2b1469e99b06c66f71df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  actionName: Hunt
-  cost: 1
-  sprite: {fileID: 21300000, guid: 1149e752e2f85af4ea0c963efbc915c5, type: 3}
-  destinationGO: {fileID: 0}
-  destinationTag: 
-  duration: 10
-  preConditions:
-  - key: canHunt
-    value: 1
-  afterEffects:
-  - key: hunt
-    value: 1
-  isRunning: 0
 --- !u!114 &1596293488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,6 +179,32 @@ MonoBehaviour:
     value: 1
   afterEffects:
   - key: canHunt
+    value: 1
+  isRunning: 0
+  chance: 0.75
+--- !u!114 &1834524917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834524915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c82cf847e7e2b1469e99b06c66f71df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionName: Hunt
+  cost: 1
+  sprite: {fileID: 21300000, guid: 1149e752e2f85af4ea0c963efbc915c5, type: 3}
+  destinationGO: {fileID: 0}
+  destinationTag: 
+  duration: 10
+  preConditions:
+  - key: canHunt
+    value: 1
+  afterEffects:
+  - key: hunt
     value: 1
   isRunning: 0
 --- !u!1 &1936320643
@@ -398,8 +399,8 @@ MonoBehaviour:
   detailedGizmos: 0
   startEndModifier:
     addPoints: 0
-    exactStartPoint: 3
-    exactEndPoint: 3
+    exactStartPoint: 4
+    exactEndPoint: 0
     useRaycasting: 0
     mask:
       serializedVersion: 2
@@ -430,7 +431,7 @@ MonoBehaviour:
     visualizeSensitivity: 0
   canMove: 1
   speed: 3
-  orientation: 0
+  orientation: 1
   enableRotation: 0
   rotationSpeed: 10
   interpolatePathSwitches: 1
