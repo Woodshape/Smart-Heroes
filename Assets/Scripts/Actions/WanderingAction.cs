@@ -18,13 +18,14 @@ namespace Actions {
         }
 
         public override void OnActionTick() {
-            
+            //  FIXME: Testing only
+            agent.awarenessComponent.FindInRange("Character", 10f);
         }
 
         public override void OnActionActivated(Goal goal) {
             base.OnActionActivated(goal);
             
-            _agent.ReachedDestinationEvent += AgentOnReachedDestinationEvent;
+            agent.ReachedDestinationEvent += AgentOnReachedDestinationEvent;
 
             Wander();
         }
@@ -44,17 +45,17 @@ namespace Actions {
                 wanderingPoint.transform.position = randomRelativePosition;
             }
 
-            _agent.SetTarget(wanderingPoint);
+            agent.SetTarget(wanderingPoint);
         }
 
         public override void OnActionDeactivated() {
             base.OnActionDeactivated();
 
-            _agent.ReachedDestinationEvent -= AgentOnReachedDestinationEvent;
+            agent.ReachedDestinationEvent -= AgentOnReachedDestinationEvent;
 
             Destroy(wanderingPoint);
             wanderingPoint = null;
-            _agent.target = null;
+            agent.target = null;
         }
         
         private void AgentOnReachedDestinationEvent() {

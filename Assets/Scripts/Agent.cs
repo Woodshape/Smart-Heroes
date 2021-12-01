@@ -7,6 +7,9 @@ using Random = UnityEngine.Random;
 
 public class Agent : MonoBehaviour {
     public GameObject target;
+
+    public Entity entity;
+    public AwarenessComponent awarenessComponent;
     
     private Vector3 lastTargetPosition = Vector3.zero;
 
@@ -20,6 +23,9 @@ public class Agent : MonoBehaviour {
         _agent = GetComponent<GAgent>();
         _planner = GetComponent<GOAPPlanner>();
         _ai = GetComponent<IAstarAI>();
+
+        entity = GetComponent<Entity>();
+        awarenessComponent = GetComponentInChildren<AwarenessComponent>();
         
         OnCreate();
     }

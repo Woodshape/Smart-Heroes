@@ -20,7 +20,7 @@ public class SurviveGoal : Goal
         return Mathf.FloorToInt(currentPriority);
     }
 
-    public override void OnGoalTick() {
+    public override void OnGoalUpdate() {
         if (!decay) {
             currentPriority += Time.deltaTime;
         }

@@ -14,15 +14,21 @@ namespace Actions {
     }
     
     public abstract class Action : MonoBehaviour, IAction {
-        public List<Goal> supportedGoals = new List<Goal>();
+        [SerializeField]
+        private List<Goal> supportedGoals = new List<Goal>();
 
-        protected Agent _agent;
+        public Agent agent;
+        
+        //  Sprite to be used in the UI
+        public Sprite sprite;
 
         protected Goal linkedGoal;
-        
+
+        public float tickTime = 1f;
+        protected float tickTimer;
 
         protected void Awake() {
-            _agent = GetComponentInParent<Agent>();
+            agent = GetComponentInParent<Agent>();
         }
 
         protected void Update() {
@@ -39,6 +45,15 @@ namespace Actions {
         public virtual List<Goal> GetSupportedGoals() {
             return supportedGoals;
         }
+        
+        public virtual void OnActionUpdate() {
+            tickTimer += Time.deltaTime;
+            if (tickTimer >= tickTime) {
+                OnActionTick();
+
+                tickTimer = 0f;
+            }
+        }
 
         public virtual void OnActionTick() {
         }
@@ -47,12 +62,18 @@ namespace Actions {
             Debug.Log($"GOAP -> Activating action for goal: {this} [{goal}]");
 
             linkedGoal = goal;
+            
+            //  Reset tick timer
+            tickTimer = 0f;
         }
         
         public virtual void OnActionDeactivated() {
             Debug.Log("GOAP -> Deactivating action: " + this);
 
             linkedGoal = null;
+            
+            //  Reset tick timer
+            tickTimer = 0f;
         }
     }
 }

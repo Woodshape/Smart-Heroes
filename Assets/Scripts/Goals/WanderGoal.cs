@@ -3,7 +3,7 @@ using DefaultNamespace;
 using UnityEngine;
 
 namespace Goals {
-    public class WanderGoal : Goal, IDecayable {
+    public class WanderGoal : Goal {
         [SerializeField]
         private int minPriority = 0;
         [SerializeField]
@@ -14,7 +14,7 @@ namespace Goals {
         [SerializeField]
         private float priorityDecayRate = 0.1f;
         private float currentPriority = 0f;
-        
+
         public override bool CanRun() {
             return true;
         }
@@ -23,16 +23,11 @@ namespace Goals {
             return Mathf.FloorToInt(currentPriority);
         }
 
-        public override void OnGoalTick() {
-        }
-
-        public override void OnGoalActivated(Action action) {
-            base.OnGoalActivated(action);
+        public override void OnGoalUpdate() {
+            if (_agent == null) {
+                return;
+            }
             
-            currentPriority = maxPriority;
-        }
-        
-        public void Decay() {
             if (_agent.IsMoving()) {
                 currentPriority -= priorityDecayRate * Time.deltaTime;
             }
@@ -41,6 +36,12 @@ namespace Goals {
             }
 
             currentPriority = Mathf.Clamp(currentPriority, minPriority, maxPriority);
+        }
+
+        public override void OnGoalActivated(Action action) {
+            base.OnGoalActivated(action);
+            
+            currentPriority = maxPriority;
         }
     }
 }

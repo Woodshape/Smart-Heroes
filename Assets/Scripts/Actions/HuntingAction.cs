@@ -15,13 +15,14 @@ namespace Actions {
             return Mathf.FloorToInt(currentCost);
         }
 
-        public override void OnActionActivated(Goal goal) {
-            base.OnActionActivated(goal);
-
-            //  FIXME
-            currentCost = 5f;
+        public override void OnActionTick() {
+            float random = Random.Range(0f, 1f);
+            if (random <= 0.25f) {
+                Debug.Log("Hunt success");
+                currentCost = 5f;
+            }
         }
-        
+
         public void Decay() {
             currentCost -= Time.deltaTime;
         }

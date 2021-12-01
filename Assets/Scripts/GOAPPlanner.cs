@@ -10,11 +10,16 @@ namespace DefaultNamespace {
         public GameObject goalContainer;
         public GameObject actionContainer;
         public GameObject combatContainer;
+        
+        public ActionIconHandler actionIconManager;
 
         public GameObject debugUIContainer;
         
         private List<Goal> goals = new List<Goal>();
         private List<Action> actions = new List<Action>();
+
+        public virtual List<Goal> GetGoals => goals;
+        public virtual List<Action> GetActions => actions;
 
         public Goal currentGoal;
         public Action currentAction;
@@ -35,13 +40,13 @@ namespace DefaultNamespace {
             }
         }
 
-        private void Update() {
+        public void Update() {
             Goal bestGoal = null;
             Action bestAction = null;
             
-            foreach (Goal goal in goals) {
-                //  Tick goal
-                goal.OnGoalTick();
+            foreach (Goal goal in GetGoals) {
+                //  Update and tick goal
+                goal.OnGoalUpdate();
                 
                 if (!goal.CanRun()) {
                     continue;
@@ -55,7 +60,7 @@ namespace DefaultNamespace {
                 Action candidateAction = null;
                 
                 //  Find action supporting this goal with the lowest cost
-                foreach (Action action in actions) {
+                foreach (Action action in GetActions) {
                     if (!action.CanRun()) {
                         continue;
                     }
@@ -97,13 +102,9 @@ namespace DefaultNamespace {
                 OnGoalChanged(bestGoal, bestAction);
             }
             
-            //  Nothing changed
+            //  Nothing changed, simply update our current action
             if (currentAction != null) {
-                currentAction.OnActionTick();
-            }
-
-            if (currentGoal != null) {
-                currentGoal.OnActiveTick();
+                currentAction.OnActionUpdate();
             }
         }
 
@@ -166,27 +167,53 @@ namespace DefaultNamespace {
             Debug.Log($"GOAP -> Action changed: {currentAction} -> {action}");
             
             //  Deactivate new goal and action
-            if (currentGoal != null) {
-                currentGoal.OnGoalDeactivated();
-            }
-
-            if (currentAction != null) {
-                currentAction.OnActionDeactivated();
-            }
+            StopGoal();
+            StopAction();
             
             currentGoal = goal;
             currentAction = action;
             
             //  Activate new goal and action
-            if (currentGoal != null) {
-                currentGoal.OnGoalActivated(action);
-            }
-
-            if (currentAction != null) {
-                currentAction.OnActionActivated(goal);
-            }
+            StartGoal(action);
+            StartAction(goal);
 
             DisplayDebugUI();
+        }
+
+        private void StartAction(Goal goal) {
+            if (currentAction == null) {
+                return;
+            }
+            
+            if (actionIconManager != null && currentAction.sprite != null) {
+                StartCoroutine(actionIconManager.Spawn(currentAction.sprite));
+            }
+            
+            currentAction.OnActionActivated(goal);
+        }
+        
+        private void StopAction() {
+            if (currentAction == null) {
+                return;
+            }
+            
+            currentAction.OnActionDeactivated();
+        }
+
+        private void StartGoal(Action action) {
+            if (currentGoal == null) {
+                return;
+            }
+
+            currentGoal.OnGoalActivated(action);
+        }
+
+        private void StopGoal() {
+            if (currentGoal == null) {
+                return;
+            }
+            
+            currentGoal.OnGoalDeactivated();
         }
 
         private void DisplayDebugUI() {

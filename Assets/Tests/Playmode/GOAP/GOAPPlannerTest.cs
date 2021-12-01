@@ -1,30 +1,43 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Actions;
 using DefaultNamespace;
+using Goals;
+using NSubstitute;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 
 public class GOAPPlannerTest
 {
-    // A Test behaves as an ordinary method
+
     [Test]
     public void GOAPPlannerTestScenario()
     {
-        // Use the Assert class to test conditions
-        GameObject go = new GameObject();
-        GOAPPlanner planner = go.AddComponent<GOAPPlanner>();
-        
-        Assert.NotNull(planner);
-    }
+        WanderGoal wanderGoal = Substitute.For<WanderGoal>();
+        WanderingAction wanderAction = Substitute.For<WanderingAction>();
 
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
-    [UnityTest]
-    public IEnumerator GOAPPlannerTestWithEnumeratorPasses()
-    {
-        // Use the Assert class to test conditions.
-        // Use yield to skip a frame.
-        yield return null;
+        GOAPPlanner planner = Substitute.For<GOAPPlanner>();
+
+        List<Goal> goals = new List<Goal> {wanderGoal};
+        List<Action> actions = new List<Action> {wanderAction};
+
+        GOAPPlanner _planner = (GOAPPlanner) FormatterServices.GetUninitializedObject(typeof(GOAPPlanner));
+        Assert.NotNull(_planner);
+
+        wanderAction.CanRun().Returns(true);
+        wanderAction.CalculateCost().Returns(1);
+        wanderAction.GetSupportedGoals().Returns(goals);
+
+        wanderGoal.CanRun().Returns(true);
+        wanderGoal.CalculatePriority().Returns(10);
+
+        planner.GetGoals.Returns(goals);
+        planner.GetActions.Returns(actions);
+
+        Assert.AreEqual(goals, planner.GetGoals);
+        Assert.AreEqual(actions, planner.GetActions);
+
+        for (int i = 0; i < 11; i++) {
+            planner.Update();
+        }
     }
 }
