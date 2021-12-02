@@ -10,10 +10,10 @@ namespace DefaultNamespace {
         public GameObject goalContainer;
         public GameObject actionContainer;
         public GameObject combatContainer;
-        
-        public ActionIconHandler actionIconManager;
 
         public GameObject debugUIContainer;
+        
+        public ActionIconHandler actionIconHandler;
         
         private List<Goal> goals = new List<Goal>();
         private List<Action> actions = new List<Action>();
@@ -29,14 +29,14 @@ namespace DefaultNamespace {
                 goals = new List<Goal>(GetComponentsInChildren<Goal>());
             }
             else {
-                Debug.LogWarning("GOAP -> No goal container on: " + this);
+                Debug.LogWarning("GOAP -> No goal container on: " + this, gameObject);
             }
             
             if (actionContainer) {
                 actions = new List<Action>(GetComponentsInChildren<Action>());
             }
             else {
-                Debug.LogWarning("GOAP -> No action container on: " + this);
+                Debug.LogWarning("GOAP -> No action container on: " + this, gameObject);
             }
         }
 
@@ -85,7 +85,7 @@ namespace DefaultNamespace {
 
             //  Did we find a goal?
             if (currentGoal == null) {
-                Debug.Log($"GOAP -> New goal and action: {bestGoal} [{bestAction}]");
+                Debug.Log($"GOAP -> New goal and action: {bestGoal} [{bestAction}]", gameObject);
                 
                 OnGoalChanged(bestGoal, bestAction);
 
@@ -97,7 +97,7 @@ namespace DefaultNamespace {
                 }
             } // We found a better goal
             else if (currentGoal != bestGoal) {
-                Debug.Log($"GOAP -> New goal found: {currentGoal} -> {bestGoal}");
+                Debug.Log($"GOAP -> New goal found: {currentGoal} -> {bestGoal}", gameObject);
                 
                 OnGoalChanged(bestGoal, bestAction);
             }
@@ -151,20 +151,20 @@ namespace DefaultNamespace {
         }
         
         private void OnActionChanged(Action action) {
-            Debug.Log($"GOAP -> Action changed: {currentAction} -> {action}");
+            Debug.Log($"GOAP -> Action changed: {currentAction} -> {action}", gameObject);
             
-            currentAction.OnActionDeactivated();
+            StopAction();
 
             currentAction = action;
 
-            currentAction.OnActionActivated(currentGoal);
+            StartAction(currentGoal);
             
             DisplayDebugUI();
         }
 
         private void OnGoalChanged(Goal goal, Action action) {
-            Debug.Log($"GOAP -> Goal changed: {currentGoal} -> {goal}");
-            Debug.Log($"GOAP -> Action changed: {currentAction} -> {action}");
+            Debug.Log($"GOAP -> Goal changed: {currentGoal} -> {goal}", gameObject);
+            Debug.Log($"GOAP -> Action changed: {currentAction} -> {action}", gameObject);
             
             //  Deactivate new goal and action
             StopGoal();
@@ -185,8 +185,8 @@ namespace DefaultNamespace {
                 return;
             }
             
-            if (actionIconManager != null && currentAction.sprite != null) {
-                StartCoroutine(actionIconManager.Spawn(currentAction.sprite));
+            if (actionIconHandler != null && currentAction.sprite != null) {
+                StartCoroutine(actionIconHandler.Spawn(currentAction.sprite, gameObject));
             }
             
             currentAction.OnActionActivated(goal);

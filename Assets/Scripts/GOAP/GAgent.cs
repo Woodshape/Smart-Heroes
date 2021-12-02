@@ -175,7 +175,7 @@ public class GAgent : MonoBehaviour {
         currentAction.isRunning = true;
 
         if (actionIconManager != null && currentAction.sprite != null) {
-            StartCoroutine(actionIconManager.Spawn(currentAction.sprite));
+            // StartCoroutine(actionIconManager.Spawn(currentAction.sprite));
         }
     }
 

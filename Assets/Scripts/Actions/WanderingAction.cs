@@ -19,7 +19,7 @@ namespace Actions {
 
         public override void OnActionTick() {
             //  FIXME: Testing only
-            agent.awarenessComponent.FindInRange("Character", 10f);
+            agent.awarenessComponent.FindInRange("Enemy", 10f);
         }
 
         public override void OnActionActivated(Goal goal) {
@@ -59,7 +59,7 @@ namespace Actions {
         }
         
         private void AgentOnReachedDestinationEvent() {
-            Debug.Log("GOAP -> Wandering point reached...");
+            // Debug.Log("GOAP -> Wandering point reached...");
 
             Destroy(wanderingPoint);
             wanderingPoint = null;

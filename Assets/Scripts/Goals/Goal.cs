@@ -28,15 +28,6 @@ namespace Goals {
             _agent = GetComponentInParent<Agent>();
         }
 
-        protected void Update() {
-            OnGoalTick();
-
-            if (this is IDecayable) {
-                IDecayable decayable = (IDecayable) this;
-                decayable.Decay();
-            }
-        }
-
         public abstract bool CanRun();
 
         public abstract int CalculatePriority();

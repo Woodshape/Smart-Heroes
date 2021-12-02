@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class ActionIcon : MonoBehaviour {
     public Image image;
     public Sprite sprite;
+
+    public Transform position;
     
     void Start() {
         if (image != null) {

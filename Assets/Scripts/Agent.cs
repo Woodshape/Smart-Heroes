@@ -36,11 +36,11 @@ public class Agent : MonoBehaviour {
 
     public void SetTarget(GameObject newTarget) {
         string tar = this.target != null ? this.target.transform.position.ToString() : "No target";
-        Debug.Log($"A* -> Setting new target: {tar} -> {newTarget.transform.position}");
+        // Debug.Log($"A* -> Setting new target: {tar} -> {newTarget.transform.position}");
         this.target = newTarget;
 
         if (target != null) {
-            Debug.Log("A* -> Setting new destination: " + target.transform.position);
+            // Debug.Log("A* -> Setting new destination: " + target.transform.position);
             _ai.destination = target.transform.position;
             if (!_ai.pathPending) {
                 Debug.Log("A* -> Searching new path");

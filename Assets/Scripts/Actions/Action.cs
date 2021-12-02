@@ -31,13 +31,6 @@ namespace Actions {
             agent = GetComponentInParent<Agent>();
         }
 
-        protected void Update() {
-            if (this is IDecayable) {
-                IDecayable decayable = (IDecayable) this;
-                decayable.Decay();
-            }
-        }
-
         public abstract bool CanRun();
 
         public abstract int CalculateCost();
@@ -59,7 +52,7 @@ namespace Actions {
         }
         
         public virtual void OnActionActivated(Goal goal) {
-            Debug.Log($"GOAP -> Activating action for goal: {this} [{goal}]");
+            Debug.Log($"GOAP -> Activating action for goal: {this} [{goal}]", gameObject.transform.parent);
 
             linkedGoal = goal;
             
@@ -68,7 +61,7 @@ namespace Actions {
         }
         
         public virtual void OnActionDeactivated() {
-            Debug.Log("GOAP -> Deactivating action: " + this);
+            Debug.Log("GOAP -> Deactivating action: " + this, gameObject.transform.parent);
 
             linkedGoal = null;
             

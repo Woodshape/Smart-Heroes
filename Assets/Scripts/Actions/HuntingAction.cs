@@ -1,12 +1,18 @@
-﻿using DefaultNamespace;
+﻿using System;
+using DefaultNamespace;
 using Goals;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Actions {
-    public class HuntingAction : Action, IDecayable {
+    public class HuntingAction : Action {
 
         private float currentCost = 5f;
-        
+
+        private void Update() {
+            currentCost -= Time.deltaTime;
+        }
+
         public override bool CanRun() {
             return true;
         }
@@ -16,15 +22,11 @@ namespace Actions {
         }
 
         public override void OnActionTick() {
+            //  FIXME
             float random = Random.Range(0f, 1f);
             if (random <= 0.25f) {
-                Debug.Log("Hunt success");
                 currentCost = 5f;
             }
-        }
-
-        public void Decay() {
-            currentCost -= Time.deltaTime;
         }
     }
 }
