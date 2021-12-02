@@ -10,16 +10,16 @@ public class ActionIconHandler : MonoBehaviour {
 
     public List<GameObject> actionIcons = new List<GameObject>();
 
-    private Transform _canvas;
+    // private Transform _canvas;
 
     [SerializeField]
     private float xOffset = 50f;
     [SerializeField]
     private float scaleBase = 5f;
 
-    private void Awake() {
-        _canvas = FindObjectOfType<Canvas>().transform;
-    }
+    // private void Awake() {
+    //     _canvas = FindObjectOfType<Canvas>().transform;
+    // }
 
     public IEnumerator Spawn(Sprite sprite, GameObject position) {
         //  Don't render any ui elements if we are not seen by any camera
@@ -27,7 +27,7 @@ public class ActionIconHandler : MonoBehaviour {
             yield break;
         }
         
-        GameObject instance = Instantiate(actionIcon, _canvas);
+        GameObject instance = Instantiate(actionIcon, transform);
         ActionIcon icon = instance.GetComponent<ActionIcon>();
         icon.sprite = sprite;
         icon.position = position.transform;

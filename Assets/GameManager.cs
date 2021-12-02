@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
@@ -15,6 +16,8 @@ public class GameManager : MonoBehaviour {
 
     private Vector3 dragOrigin;
 
+    private Character selectedCharacter;
+
     private void Awake() {
         _camera = Camera.main;
     }
@@ -22,10 +25,20 @@ public class GameManager : MonoBehaviour {
     void Update() {
         PanCamera();
         Zoom();
-        
-        float horizontal = Input.GetAxis("Horizontal");
-        if (horizontal != 0f) {
+
+        //  Click
+        if (Input.GetMouseButton(0)) {
+            Vector2 v = _camera.ScreenToWorldPoint(Input.mousePosition);
+ 
+            Collider2D col = Physics2D.OverlapPoint(v);
+            if (col == null) {
+                return;
+            }
             
+            if (col.CompareTag("Character")) {
+                selectedCharacter = col.GetComponent<Character>();
+                Debug.Log(selectedCharacter);
+            }
         }
     }
     
